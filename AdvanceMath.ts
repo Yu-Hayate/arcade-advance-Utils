@@ -4,8 +4,6 @@ let __breakFlag:boolean = false;
 let __currentCaseValue: any = null;
 let __uses: number = 1;
 let __comId: number = 0;
-let __comListId: number[] = [];
-let __comList: string[] = [];
 let __seed: number = 271722; // in 750 test, 50% chance is = 50.2%
 let __result: number = 0;
 let __chance: boolean = false;
@@ -768,31 +766,11 @@ namespace Advance {
     }
     //% blockId=comment
     //% subcategory="String"
-    //% block="/* $yourComment */ || id $id"
+    //% block="/* $yourComment */"
     //% color="#7F9387"
-    //% group="Others"
+    //% group="Comments"
     //% inlineInputMode=inline
-    export function comment(yourComment: string, id?: number) {
-        if (id === undefined) {
-            id = __comId;
-            __comId++;
-        }
-        __comList.push(yourComment);
-        __comListId.push(id);
-    }
-    //% blockId=get_comment
-    //% subcategory="String"
-    //% block="get comment id $id"
-    //% color="#7F9387"
-    //% group="Others"
-    //% inlineInputMode=inline
-    export function getComment(id: number): string {
-        const index: number = __comListId.indexOf(id);
-        if (index !== -1) {
-            return __comList[index];
-        } else {
-            return "Comment not found";
-        }
+    export function comment(yourComment: string) {
     }
     //% blockId=OR
     //% block="OR $a $b"
