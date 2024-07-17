@@ -1,11 +1,6 @@
- 
-
-
-> Open this page at [https://yu-hayate.github.io/arcade-advance-utils/](https://yu-hayate.github.io/arcade-advance-utils/)
-
 ## Use as Extension
 
-This repository can be added as an **extension** in MakeCode.
+This repository can be added as an **extension** in MakeCode arcade.
 
 * open [https://arcade.makecode.com/](https://arcade.makecode.com/)
 * click on **New Project**
