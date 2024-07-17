@@ -10,7 +10,7 @@
         "main.ts",
         "README.md",
         "assets.json",
-        "AdvanceMath.ts"
+        "Advance.ts"
     ],
     "testFiles": [
         "test.ts"
