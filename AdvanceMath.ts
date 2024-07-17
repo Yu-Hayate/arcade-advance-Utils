@@ -165,7 +165,7 @@ enum DiscreteMathOperation {
  */
 //% color="#0074D9" 
 //% block="Advanced"
-//% subcategories='["Math","String","Scripts","Random","Performance Testing"]'
+//% subcategories='["Math","String","Logic","Scripts","Random","Performance Testing"]'
 //% weight=12
 //% advanced=false
 namespace Advance {
@@ -914,12 +914,16 @@ namespace Advance {
     }
     //% blockId=breakFlag
     //% block="break"
+    //% subcategory="Logic"
+    //% color="#45AAF2"
     export function Break() {
         __breakFlag = true;
     }
     //% blockId=defaultCase
     //% block="default case"
     //% handlerStatement=true
+    //% subcategory="Logic"
+    //% color="#45AAF2"
     export function defaultCase(handler: () => void) {
         if (!__breakFlag) {
             handler();
@@ -929,6 +933,8 @@ namespace Advance {
     //% block="case $caseValue :"
     //% caseValue.shadow=text
     //% handlerStatement=true
+    //% subcategory="Logic"
+    //% color="#45AAF2"
     export function Case(caseValue: any, handler: () => void) {
         if (!__breakFlag && caseValue == __currentCaseValue) {
             handler();
@@ -938,6 +944,8 @@ namespace Advance {
     //% block="Switch $value"
     //% value.shadow=text
     //% handlerStatement=true
+    //% subcategory="Logic"
+    //% color="#45AAF2"
     export function Switch(value: any, handler: () => void) {
         if (__currentCaseValue == null) {
             __currentCaseValue = value;
