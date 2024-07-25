@@ -10,7 +10,8 @@
         "main.ts",
         "README.md",
         "assets.json",
-        "Advance.ts"
+        "Advance.ts",
+        "debuging_tools.ts"
     ],
     "testFiles": [
         "test.ts"

@@ -9,11 +9,6 @@ let __result: number = 0;
 let __chance: boolean = false;
 let __avr: number[] = [];
 const abbreviations: string[] = ['', 'K', 'M', 'B', 't', 'q', 'Q', 's', 'S', 'o', 'n', 'd', 'U', 'D', 'T', 'Qt', 'Qd', 'Sd', 'St', 'O', 'N', 'v', 'c', 'U', 'D', 'T', 'Qt', 'Qd', 'Sd', 'St', 'O', 'N', 'v', 'c', 'U', 'D', 'T', 'Qt', 'Qd', 'Sd', 'St', 'O', 'N', 'v', 'c', 'U', 'D', 'T', 'Qt', 'Qd', 'Sd', 'St', 'O', 'N', 'v', 'c'];
-interface Script {
-    func: () => void;
-    enabled: boolean;
-}
-let __scripts: { [key: string]: Script } = {};
 interface TestResult {
     startTime: number;
     pausedTime: number;
@@ -23,6 +18,10 @@ interface TestResult {
 let __testResults: { [id: string]: TestResult } = {}
 let __consoleLoggingEnabled = false
 Advance.ScriptsShadow("default")
+enum Numbers {
+    PI = 3.1415926535,
+    e = 2.718281828459045
+}
 enum Cipher {
     //% block="A"
     S = 83,
@@ -62,29 +61,28 @@ enum Cipher {
     Q = 81
 }
 const ciphers: { [key: number]: string[] } = {
-    [Cipher.S]: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 '.split(''),
-    [Cipher.A]: 'QSWA4ZXE 3RNB8CV2DY05HFGTU16J9MKI7POL'.split(''),
-    [Cipher.B]: 'M4LPY0KNBJ27IUHVG8 OT36FQ1XDRES9ZA5WC'.split(''),
-    [Cipher.C]: 'P0OIQ5WEA1 LSKDJ6F2HGRUY9T3ZM47BCN8XV'.split(''),
-    [Cipher.D]: 'POI1UYTR4EWQ2LM3VZK8X56 N7J0SH9DBCGFA'.split(''),
-    [Cipher.E]: 'ZAQ2XSW0 4C7DERTY95FG3HNBV6UJ8M1IPOLK'.split(''),
-    [Cipher.F]: 'PL1MOK7I0UH3JNBY9V6GT2RFCX4DEQ85 SAZW'.split(''),
-    [Cipher.G]: 'L9A1UJY4VH8 23N0X7CMZTBFD5OQGKRWI6ESP'.split(''),
-    [Cipher.H]: '2FDBPZMXR9QECU35I7H1LYW4OKJV80NGAS6T '.split(''),
-    [Cipher.I]: 'ZK7YISLU0X29J4FNGCP3VQB1H8E MTD5W6ROA'.split(''),
-    [Cipher.J]: '6YO1Z80L9RJAWF 24T5QIGNSX3UPHBVKD7MCE'.split(''),
-    [Cipher.K]: 'J17W8R6GQZCX9BI4EOY2PL5 SVMFNTA03HDUK'.split(''),
-    [Cipher.L]: 'YGMLPTB32UFOZX1Q78CEW6HJD0K 9R4A5VINS'.split(''),
-    [Cipher.M]: 'WQ63LP9D4NOXAHS I5G1JRV8UZT2C7FKYBE0M'.split(''),
-    [Cipher.N]: 'A1XB3ZOHY7KJVQMIE2DSG9 4R0P68F5WULTCN'.split(''),
-    [Cipher.O]: 'M Q5AI8W4NRFUHYZCVKG0B9P7XJ21D36LSTOE'.split(''),
-    [Cipher.P]: 'YENW32PUV0FXB1RG97OAK6D4M8IHSZT5JQC L'.split(''),
-    [Cipher.Q]: 'O3BYX7A4Q0I5NRPCT6J8LMG KH9WV1Z2SFDUE'.split('')
-};
-
-// Advanced Math Functions for MakeCode Arcade
+    [Cipher.S]: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\\/!@#$%?&*(){}[]~<>`";:'.split(''),
+    [Cipher.A]: '/c4?!<EAD1nkr8G$BZXKL{}q6S5aM%7]p2tvygW[3oVH>@b~hjuU\\YTm*si;&)fN`0IdCP9RQOe(#FJ"lwxz:'.split(''),
+    [Cipher.B]: '!F6l0"#eUTh2C7K[{/)r>MXY&ux3(1pV@5GncbRj~9Qvk%*gO;\\`4atymHBiq$wJ8z<]IS?D}WsZdAf:PLNoE'.split(''),
+    [Cipher.C]: ')f$x]aD3b"qm}r*(Kh;?QBNIe#!J9<VXZCy524[&OWMFTo>kP0l`@tpzL6{A8:G%j7\\wuiRgUsESv~HcYn/1d'.split(''),
+    [Cipher.D]: 'z[Th@3n%}?*odlPe/G~IVCQZDUS6f2t{RsB80#XHr]4<Lcvya"w`k1NA>pEY5&M:$KOmx\\Ji9W;7gbjqu!F()'.split(''),
+    [Cipher.E]: '$Xtf9JW8h6{5MxGYavcUwiCj\\0R%1;e`TQ]p(HZ:2B!rzbO4N3g*d/EqlSousy>?"<LK[~&)#I7AF@}kVnmPD'.split(''),
+    [Cipher.F]: 'RhG/7D3vLei0}~(9UOI4yEu*TmB>\\MFw1lW!nK[ba{%5#dXc68fz"$p`<As@xjQkSC2YgJtP:VHZ?&]No;rq)'.split(''),
+    [Cipher.G]: 'c8A*BR@WPh)U$swq65r?94pG#[~3`XMEaYOi\\Q1!Zx:Lk%vzeIV]oyjJ(bCmg{fH2unS/}T";0t>F7dKD&<Nl'.split(''),
+    [Cipher.H]: '?2#B~4>jJua&V!gNCLGpUmhE;\\9*sWd1lDX/8]b5@{v0t6eIYqAF$7i:Sxczo}Pf%RH3Z"nrO<[yT(Qw`KMk)'.split(''),
+    [Cipher.I]: 'Gyw:nRiqp3oTVYj6vM#$hF9cNzQsKe\\<!fr}01{Ed"ZHJIU]`P[7BSl)guXC*5?W8k4Lbt&~2;%O@ax/A(Dm>'.split(''),
+    [Cipher.J]: 'w{/Q}:IFpD@95kMBUv&#j4T!Sn]xrP[Y7>J<G2iu%ZW*LOa~\\;HC6o8`Vm$1z?gR03yq)hbdKXAlsf"cNE(te'.split(''),
+    [Cipher.K]: '2YA!$GB)ol#]\\bS&jdUMcH`XxFInRw9Z4zE}7vmpaiNQ5ut1y/CfV<["r~K6h*%{Og:8T?0>W@Dk3JLPqe;s('.split(''),
+    [Cipher.L]: 'u`edB"OFCak<4ZXJ$G[P0&xt6T~cEziNw\\RS7b}YjApLDQK183m2@Ir?:;*oVsl9yg!n5{M)v#Wq>hU]H%(/f'.split(''),
+    [Cipher.M]: 'A#L6x5U9j{o$wz}d(2J:/cSlh)r\\>Y[1N%bms4e?`H"k0EP@!F&MTiBp7CZ<ynXtug~ORqG;]WDfIQK3vaV*8'.split(''),
+    [Cipher.N]: 'A;]q/"Ulf6eT`308?*1wDHbLju<{F~V2vEc#($xXS@sY%hC[4oMO&7rIGZg>ikpzPQay9}5KB):dmtR!Nn\\WJ'.split(''),
+    [Cipher.O]: '])?Mx!7q~D4#zO}dpgJBL1m<:EWsIf@bSR&TrCKGl2ojXFw{Y[nc*60Hu(yZtvA83\\5>UN`iVhQe/k9aP"%;$'.split(''),
+    [Cipher.P]: '}3rawC<hxP["Ido:7QWB)(fgm6/Xs9`%{y;Jz0LUqvF4SeZin&k]HK>c@pRT5uO2\\?G$j~AYbtDl8#*1!MVNE'.split(''),
+    [Cipher.Q]: 'b&;p:exf64FBCTKP70L?Wvd>ijoh/uHNR`<1z@}E"#*(!~]{Asr)Y5MD9UglJGZ8q2ma$QtOcIn[V%\\Xky3wS'.split('')
+}
 enum singleNum {
     //% block="cube root"
+    //% block.loc.fr="racine cubique"
     _CBRT,
     // Default trigonometric functions
     //% block="sin"
@@ -115,10 +113,9 @@ enum singleNum {
     _GAMMA,
     // Factorial function
     //% block="factorial"
+    //% block.loc.fr="factorielle"
     _FACTORIAL
 }
-// Statistical functions
-// Enum to define the statistical operations
 enum StatOperation {
     // Mean calculation
     //% block="mean"
@@ -128,15 +125,16 @@ enum StatOperation {
     MEDIAN,
     // Standard deviation calculation
     //% block="standard deviation"
+    //% block.loc.fr="écart type"
     STANDARD_DEVIATION
 }
-// Enum to define the discrete math operations
 enum DiscreteMathOperation {
     // log of any number
     //% block="logX"
     _LOGX,
     // GCD calculation
     //% block="greatest common divisor"
+    //% block.loc.fr=
     _GCD,
     // LCM calculation
     //% block="least common multiple"
@@ -152,9 +150,9 @@ enum DiscreteMathOperation {
     _ABSOLUTE_DIFFERENCE,
     // Average of two numbers
     //% block="average"
+    //% block.loc.fr="moyenne"
     _AVERAGE
 }
-
 /*
  *     //% name.shadow="ScriptNamesList"
  * 
@@ -162,15 +160,20 @@ enum DiscreteMathOperation {
  * 
  *     //% (add variable shadow here)
  * 
+ *     //% advanced=true
+ * 
+ *     //% handlerStatement=true
+ * 
  */
-//% color="#0074D9" 
-//% block="Advanced"
-//% subcategories='["Math","String","Logic","Scripts","Random","Performance Testing"]'
+
+//% block="Advanced" color="#0074D9" 
+//% subcategories='["Math","String","Logic","Scripts","Random","Testing"]'
 //% weight=12
 //% advanced=false
 namespace Advance {
     //% blockId=abv_num
-    //% block="abriviate Number $num || with $len decimals"
+    //% block="Abriviate Number $num || with $len decimals"
+    //% block.loc.fr="Abréger le nombre $num || avec $len décimales"
     //% subcategory="String"
     //% color="#F5D547"
     //% weight=10
@@ -192,11 +195,13 @@ namespace Advance {
      * @returns The uppercase string
      */
     //% blockId=toUpperCase
-    //% block="convert $value to uppercase"
+    //% block="Convert $value to uppercase"
+    //% block.loc.fr="Convertir $value en majuscules"
     //% subcategory="String"
     //% color="#F5D547"
     //% weight=11
     //% value.defl="Hello, World!"
+    //% group="strings"
     export function toUpperCase(value: string): string {
         return value.toUpperCase();
     }
@@ -206,11 +211,13 @@ namespace Advance {
      * @returns The lowercase string
      */
     //% blockId=toLowerCase
-    //% block="convert $value to lowercase"
+    //% block="Convert $value to lowercase"
+    //% block.loc.fr="Convertir $value en minuscules"
     //% subcategory="String"
     //% color="#F5D547"
     //% weight=12
     //% value.defl="Hello, World!"
+    //% group="strings"
     export function toLowerCase(value: string): string {
         return value.toLowerCase();
     }
@@ -221,12 +228,14 @@ namespace Advance {
     * @returns True if the string starts with the specified substring, otherwise false
     */
     //% blockId=startWith
-    //% block="check if $value starts with $substring"
+    //% block="Check if $value starts with $substring"
+    //% block.loc.fr="Vérifier si $value commence par $substring"
     //% subcategory="String"
     //% color="#F5D547"
     //% weight=16
     //% value.defl="Hello, World!"
     //% substring.defl="Hello"
+    //% group="strings"
     export function startsWith(value: string, substring: string): boolean {
         return value.indexOf(substring) === 0;
     }
@@ -237,17 +246,20 @@ namespace Advance {
      * @returns True if the string ends with the specified substring, otherwise false
      */
     //% blockId=endWith
-    //% block="check if $value ends with $substring"
+    //% block="Check if $value ends with $substring"
+    //% block.loc.fr="Vérifier si $value se termine par $substring"
     //% subcategory="String"
     //% color="#F5D547"
     //% weight=15
     //% value.defl="Hello, World!"
     //% substring.defl="World!"
+    //% group="strings"
     export function endsWith(value: string, substring: string): boolean {
         return value.indexOf(substring) === (value.length - substring.length);
     }
     //% blockId=getCurRandom
-    //% block="Get Current Random Value"
+    //% block="Get current random value"
+    //% block.loc.fr="Obtenir la valeur aléatoire actuelle"
     //% group="Random"
     //% subcategory="Random"
     //% weight=10
@@ -256,7 +268,8 @@ namespace Advance {
         return __result
     }
     //% blockId=lerp
-    //% block="lerp from $start to $end with $t \\%"
+    //% block="Lerp from $start to $end with $t \\%"
+    //% block.loc.fr="Interpoler de $start à $end avec $t \\%"
     //% start.delf=10
     //% end.delf=320
     //% t.delf=50
@@ -265,20 +278,20 @@ namespace Advance {
     //% color="#A55EEA"
     export function Lerp(start: number, end: number, t: number) {
         t /= 100;
-        // Clamps t to the range [0, 1]
         t = Math.max(0, Math.min(1, t));
         return start + t * (end - start);
     }
     //% subcategory="Math"
-    //% blockId=PI
-    //% block="PI"
+    //% blockId=some_numbers
+    //% block="$num"
     //% weight=39
     //% color="#A55EEA"
-    export function PI() {
-        return 3.141592
+    export function Num(num: Numbers) {
+        return num
     }
     //% blockId=seed
-    //% block="Get Seed"
+    //% block="Get seed"
+    //% block.loc.fr="Obtenir la graine de génération"
     //% group="Random"
     //% subcategory="Random"
     //% weight=20
@@ -287,7 +300,8 @@ namespace Advance {
         return __seed
     }
     //% blockId=setSeed
-    //% block="set seed to $e"
+    //% block="Set seed to $e"
+    //% block.loc.fr="Définir la graine à $e"
     //% e.delf=123456
     //% group="Random"
     //% subcategory="Random"
@@ -297,10 +311,11 @@ namespace Advance {
         __seed = e % 2 ** 32
     }
     //% blockId=testRandom
-    //% block="test random accuracy for $attempts attempts"
+    //% block="Test random accuracy for $attempts attempts"
+    //% block.loc.fr="Tester la précision aléatoire pour $attempts tentatives"
     //% attempts.delf=100
     //% group="Random"
-    //% subcategory="Random"
+    //% subcategory="Testing"
     //% weight=20
     //% color="#ff8135"
     export function testRandom(attempts: number) {
@@ -320,7 +335,8 @@ namespace Advance {
         }
     }
     //% blockId=rand
-    //% block="random"
+    //% block="Random"
+    //% block.loc.fr="aléatoire"
     //% e.delf=0
     //% t.delf=1
     //% group="Random"
@@ -337,7 +353,8 @@ namespace Advance {
         return __result;
     }
     //% blockId=randInt
-    //% block="random integer min $e max $t"
+    //% block="Random integer min $e max $t"
+    //% block.loc.fr="Entier aléatoire min $e max $t"
     //% e.delf=0
     //% t.delf=100
     //% group="Random"
@@ -350,105 +367,21 @@ namespace Advance {
     //% blockId=randChance
     //% e.delf=50
     //% group="Random"
-    //% block=" $e \\% chance"
+    //% block="$e \\% chance"
+    //% block.loc.fr="$e \\% de chance"
     //% subcategory="Random"
     //% weight=70
     //% color="#ff8135"
     export function chance(e: number = 50) {
         return (e /= 100), Advance.random() <= e;
     }
-    /**
-     * Registers a script with a given name and its enabled status.
-     * @param name The name of the script to register.
-     * @param script The script function to run.
-     * @param enabled The status of the script (enabled or disabled).
-     */
-    //% blockId=registerScr
-    //% block="register script $name, enabled $enabled"
-    //% enabled.shadow="toggleOnOff"
-    //% group="Scripts"
-    //% name.shadow="ScriptNamesList"
-    //% name.defl="foo"
-    //% subcategory="Scripts"
-    //% weight=100
-    //% color="#1F2EFF"
-    export function registerScript(name: string, enabled: boolean, script: () => void) {
-        __scripts[name] = { func: script, enabled: enabled };
-    }
-    /**
-     * Runs the script with the given name if it is enabled.
-     * @param name The name of the script to run.
-     */
-    //% blockId=runScr
-    //% block="run script $name"
-    //% group="Scripts"
-    //% name.shadow="ScriptNamesList"
-    //% name.defl="foo"
-    //% subcategory="Scripts"
-    //% weight=90
-    //% color="#1F2EFF"
-    export function runScript(name: string) {
-        let script = __scripts[name];
-        if (script) {
-            if (script.enabled) {
-                script.func();
-            } else {
-                console.log(`Script "${name}" is disabled`);
-            }
-        } else {
-            console.log(`Script with name "${name}" not found`);
-        }
-    }
-    /**
-     * Toggles the enabled status of the script with the given name.
-     * @param name The name of the script to toggle.
-     */
-    //% blockId=toggleScr
-    //% block="toggle script $name"
-    //% group="Scripts"
-    //% name.shadow="ScriptNamesList"
-    //% name.defl="foo"
-    //% subcategory="Scripts"
-    //% weight=80
-    //% color="#1F2EFF"
-    export function toggleScript(name: string) {
-        let script = __scripts[name];
-        if (script) {
-            script.enabled = !script.enabled;
-
-            console.log(`Script "${name}" is now ${script.enabled ? 'enabled' : 'disabled'}`);
-        } else {
-            console.log(`Script with name "${name}" not found`);
-        }
-    }
-    /**
-     * Enables or disables the script with the given name.
-     * @param name The name of the script to enable/disable.
-     * @param enabled The new status of the script (enabled or disabled).
-     */
-    //% blockId=enableScr
-    //% block="enable script $name to $enabled"
-    //% enabled.shadow="toggleOnOff"
-    //% group="Scripts"
-    //% name.shadow="ScriptNamesList"
-    //% name.defl="foo"
-    //% subcategory="Scripts"
-    //% weight=80
-    //% color="#1F2EFF"
-    export function enableScript(name: string, enabled: boolean) {
-        let script = __scripts[name];
-        if (script) {
-            script.enabled = enabled;
-            console.log(`Script "${name}" has been ${enabled ? 'enabled' : 'disabled'}`);
-        } else {
-            console.log(`Script with name "${name}" not found`);
-        }
-    }
+   
     //% blockId=endTest
-    //% block="end Performance test || with ID $id"
-    //% group="Performance Testing"
+    //% block="End Performance test || with ID $id"
+    //% block.loc.fr="Fin du test de performance || avec l'ID $id"
+    //% group="Performence Testing"
     //% id.shadow="PerformanceTesting"
-    //% subcategory="Performance Testing"
+    //% subcategory="Testing"
     //% weight=90
     //% color="#249CA3"
     export function endTest(id?: string): void {
@@ -469,10 +402,11 @@ namespace Advance {
         }
     }
     //% blockId=startTest
-    //% block="start Performance test || with ID $id"
-    //% group="Performance Testing"
+    //% block="Start Performance test || with ID $id"
+    //% block.loc.fr="Debut du test de performance || avec l'ID $id"
+    //% group="Performence Testing"
     //% id.shadow="PerformanceTesting"
-    //% subcategory="Performance Testing"
+    //% subcategory="Testing"
     //% weight=100
     //% color="#249CA3"
     export function startTest(id?: string) {
@@ -485,11 +419,12 @@ namespace Advance {
             testResult.pausedTime = 0
         }
     }
-    //% blockId=pauerTest
-    //% block="pause Performance test || with ID $id"
-    //% group="Performance Testing"
+    //% blockId=pauseTest
+    //% block="Pause Performance test || with ID $id"
+    //% block.loc.fr="Pause du test de performance || avec l'ID $id"
+    //% group="Performence Testing"
     //% id.shadow="PerformanceTesting"
-    //% subcategory="Performance Testing"
+    //% subcategory="Testing"
     //% weight=80
     //% color="#249CA3"
     export function pauseTest(id?: string) {
@@ -507,10 +442,11 @@ namespace Advance {
         }
     }
     //% blockId=resumeTest
-    //% block="resume Performance test || with ID $id"
-    //% group="Performance Testing"
+    //% block="Resume Performance test || with ID $id"
+    //% block.loc.fr="Reprendre le test de performance || avec l'ID $id"
+    //% group="Performence Testing"
     //% id.shadow="PerformanceTesting"
-    //% subcategory="Performance Testing"
+    //% subcategory="Testing"
     //% weight=70
     //% color="#249CA3"
     export function resumeTest(id?: string) {
@@ -530,10 +466,11 @@ namespace Advance {
         }
     }
     //% blockId=averageTestTime
-    //% block="average time of Performance test || with ID $id"
-    //% group="Performance Testing"
+    //% block="Average time of Performance test || with ID $id"
+    //% block.loc.fr="Temps moyen du test de performance || avec l'ID $id"
+    //% group="Performence Testing"
     //% id.shadow="PerformanceTesting"
-    //% subcategory="Performance Testing"
+    //% subcategory="Testing"
     //% weight=60
     //% color="#249CA3"
     export function averageTestTime(id?: string): number {
@@ -549,13 +486,14 @@ namespace Advance {
         }
     }
     //% blockId=compareTest
-    //% block="compare test with $id1 to test with $id2"
-    //% group="Performance Testing"
+    //% block="Compare test with id $id1 to test with id $id2"
+    //% block.loc.fr="Comparer le test avec ID $id1 au test avec ID $id2"
+    //% group="Performence Testing"
     //% id1.shadow="PerformanceTesting"
     //% id1.delf="default"
     //% id2.shadow="PerformanceTesting"
     //% id2.delf="default"
-    //% subcategory="Performance Testing"
+    //% subcategory="Testing"
     //% weight=50
     //% color="#249CA3"
     export function compareTests(id1: string, id2: string): number {
@@ -565,10 +503,11 @@ namespace Advance {
         return time1 - time2
     }
     //% blockId=resetTest
-    //% block="reset time || with ID $id"
-    //% group="Performance Testing"
+    //% block="Reset time || with ID $id"
+    //% block.loc.fr="Réinitialiser le temps || avec l'ID $id"
+    //% group="Performence Testing"
     //% id.shadow="PerformanceTesting"
-    //% subcategory="Performance Testing"
+    //% subcategory="Testing"
     //% weight=40
     //% color="#249CA3"
     export function resetTestTime(id?: string) {
@@ -576,10 +515,11 @@ namespace Advance {
         delete __testResults[id]
     }
     //% blockId=getTest
-    //% block="get Performance test result || with ID $id"
-    //% group="Performance Testing"
+    //% block="Get Performance test result || with ID $id"
+    //% block.loc.fr="Obtenir le résultat du test de performance || avec l'ID $id"
+    //% group="Performence Testing"
     //% id.shadow="PerformanceTesting"
-    //% subcategory="Performance Testing"
+    //% subcategory="Testing"
     //% id.delf="default"
     //% weight=80
     //% color="#249CA3"
@@ -596,9 +536,10 @@ namespace Advance {
         }
     }
     //% blockId=consoleLogging
-    //% block="console logging enabled $enabled"
-    //% group="Performance Testing"
-    //% subcategory="Performance Testing"
+    //% block="Console logging enabled $enabled"
+    //% block.loc.fr="Console logging activé $enabled"
+    //% group="Performence Testing"
+    //% subcategory="Testing"
     //% weight=30
     //% color="#249CA3"
     export function toggleConsoleLogging(enabled: boolean): void {
@@ -694,10 +635,11 @@ namespace Advance {
         }
     }
     //% blockId=Ciphers
-    //% block="ciphers $Cipher1|| $Cipher2 $Cipher3 $Cipher4 $Cipher5 $Cipher6 $Cipher7 $Cipher8"
+    //% block="Ciphers $Cipher1|| $Cipher2 $Cipher3 $Cipher4 $Cipher5 $Cipher6 $Cipher7 $Cipher8"
     //% inlineInputMode=inline
     //% color="#F7EA44"
     //% subcategory="String"
+    //% group="strings"
     export function shadowCiphers(Cipher1: Cipher, Cipher2?: Cipher, Cipher3?: Cipher, Cipher4?: Cipher, Cipher5?: Cipher, Cipher6?: Cipher, Cipher7?: Cipher, Cipher8?: Cipher) {
         Cipher2 = Cipher2 ? Cipher2 : Cipher.S;
         Cipher3 = Cipher3 ? Cipher3 : Cipher.S;
@@ -709,13 +651,15 @@ namespace Advance {
         return [Cipher1, Cipher2, Cipher3, Cipher4, Cipher5, Cipher6, Cipher7, Cipher8];
     }
     //% blockId=encodeStr
-    //% block="encode $str with $ciphersList"
+    //% block="Encode $str with $ciphersList"
+    //% block.loc.fr="Encoder $str avec $ciphersList"
     //% ciphersList.shadow=Ciphers
     //% str.delf="Hello, World!"
     //% subcategory="String"
     //% color="#F5D547"
+    //% group="strings"
     export function encode(str: string, ciphersList: Cipher[]): string {
-        str = removeInvalidCharacters(str.toUpperCase());
+        str = removeInvalidCharacters(str);
         for (let j = 0; j < ciphersList.length; j++) {
             const currentCipher = ciphersList[j];
             let encoded = '';
@@ -734,13 +678,15 @@ namespace Advance {
         return str;
     }
     //% blockId=decodeStr
-    //% block="decode $encoded with $ciphersList"
+    //% block="Decode $encoded with $ciphersList"
+    //% block.loc.fr="Decoder $str avec $ciphersList"
     //% ciphersList.shadow=Ciphers
     //% encoded.delf="Hello, World!"
     //% subcategory="String"
     //% color="#F5D547"
+    //% group="strings"
     export function decode(encoded: string, ciphersList: Cipher[]): string {
-        encoded = removeInvalidCharacters(encoded.toUpperCase());
+        encoded = removeInvalidCharacters(encoded);
 
         for (let j = ciphersList.length - 1; j >= 0; j--) {
             const currentCipher = ciphersList[j];
@@ -756,7 +702,7 @@ namespace Advance {
                     }
                     decoded += isReferenceCipher(currentCipher) ? ciphers[Cipher.S][newIndex] : ciphers[Cipher.S][newIndex];
                 } else {
-                    decoded += char; // keep the character as is if not found in the cipher
+                    decoded += char;
                 }
             }
 
@@ -827,7 +773,8 @@ namespace Advance {
         return a ^ b;
     }
     //% blockId=IS_BIT_SET
-    //% block="is bit $bitIndex set in $a"
+    //% block="Is bit $bitIndex set in $a"
+    //% block.loc.fr="Le bit $bitIndex est-il défini dans $a"
     //% group="bitwise"
     //% subcategory="Math"
     //% color="#A55EEA"
@@ -836,7 +783,8 @@ namespace Advance {
         return (a & (1 << bitIndex)) !== 0;
     }
     //% blockId=SET_BIT
-    //% block="set bit $bitIndex in $a to $b"
+    //% block="Set bit $bitIndex in $a to $b"
+    //% block.loc.fr="Définir le bit $bitIndex dans $a à $b"
     //% group="bitwise"
     //% subcategory="Math"
     //% color="#A55EEA"
@@ -845,7 +793,8 @@ namespace Advance {
         return (a & ~(1 << bitIndex)) | ((b & 1) << bitIndex);
     }
     //% blockId=COUNT_LEADING_ZEROS
-    //% block="count leading zeros in $a"
+    //% block="Count leading zeros in $a"
+    //% block.loc.fr="Compter les zéros de tête dans $a"
     //% group="bitwise"
     //% subcategory="Math"
     //% color="#A55EEA"
@@ -860,7 +809,8 @@ namespace Advance {
         return count;
     }
     //% blockId=COUNT_TRAILING_ZEROS
-    //% block="count trailing zeros in $a"
+    //% block="Count trailing zeros in $a"
+    //% block.loc.fr="Compter les zéros de fin dans $a"
     //% group="bitwise"
     //% subcategory="Math"
     //% color="#A55EEA"
@@ -875,7 +825,8 @@ namespace Advance {
         return count;
     }
     //% blockId=REVERSE_BITS
-    //% block="reverse bits of $a"
+    //% block="Reverse bits of $a"
+    //% block.loc.fr="Inverser les bits de $a"
     //% group="bitwise"
     //% subcategory="Math"
     //% color="#A55EEA"
@@ -889,7 +840,8 @@ namespace Advance {
         return a;
     }
     //% blockId=TOGGLE_BIT
-    //% block="toggle bit $bitIndex in $a"
+    //% block="Toggle bit $bitIndex in $a"
+    //% block.loc.fr="Basculer le bit $bitIndex dans $a"
     //% group="bitwise"
     //% subcategory="Math"
     //% color="#A55EEA"
@@ -899,6 +851,7 @@ namespace Advance {
     }
     //% blockId=HAMMING_DISTANCE
     //% block="calculate Hamming distance between $a and $b"
+    //% block.loc.fr="Calculer la distance de Hamming entre $a et $b"
     //% group="bitwise"
     //% subcategory="Math"
     //% color="#A55EEA"
@@ -913,14 +866,16 @@ namespace Advance {
         return count;
     }
     //% blockId=breakFlag
-    //% block="break"
+    //% block="Break"
+    //% block.loc.fr="Interrompre"
     //% subcategory="Logic"
     //% color="#45AAF2"
     export function Break() {
         __breakFlag = true;
     }
     //% blockId=defaultCase
-    //% block="default case"
+    //% block="Default case"
+    //% block.loc.fr="Cas par défaut"
     //% handlerStatement=true
     //% subcategory="Logic"
     //% color="#45AAF2"
@@ -931,6 +886,7 @@ namespace Advance {
     }
     //% blockId=Case
     //% block="case $caseValue :"
+    //% block.loc.fr="cas $caseValue :"
     //% caseValue.shadow=text
     //% handlerStatement=true
     //% subcategory="Logic"
@@ -942,6 +898,7 @@ namespace Advance {
     }
     //% blockId=switch
     //% block="Switch $value"
+    //% block.loc.fr="Changer $value"
     //% value.shadow=text
     //% handlerStatement=true
     //% subcategory="Logic"
@@ -954,13 +911,6 @@ namespace Advance {
         __breakFlag = false;
         __currentCaseValue = null;
     }
-
-
-
-
-
-
-
 }
 function isReferenceCipher(cipher: Cipher): boolean {
     return cipher === Cipher.S;
