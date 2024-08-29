@@ -15,6 +15,15 @@ interface TestResult {
     totalTime: number;
     uses: number;
 }
+let romanSymbols: { [key: number]: string } = {
+    1: "I", 4: "IV", 5: "V", 9: "IX",
+    10: "X", 40: "XL", 50: "L", 90: "XC",
+    100: "C", 400: "CD", 500: "D", 900: "CM",
+    1000: "M", 4000: "MV̅", 5000: "V̅", 9000: "ĪX̅",
+    10000: "X̅", 40000: "X̅L̅", 50000: "L̅", 90000: "X̅C̅",
+    100000: "C̅", 400000: "C̅D̅", 500000: "D̅", 900000: "C̅M̅",
+    1000000: "M̅"
+};
 let __testResults: { [id: string]: TestResult } = {}
 let __consoleLoggingEnabled = false
 Advance.ScriptsShadow("default")
@@ -179,7 +188,7 @@ namespace Advance {
     //% weight=10
     //% num.delf=4245
     //% len.delf=2
-    //% group="abriviate"
+    //% group="numbers"
     export function abbreviateNumber(num: number, len?: number): string {
         if (!len) len = 1
         const length: number = Math.floor(Math.log(Math.abs(num)));
@@ -188,6 +197,28 @@ namespace Advance {
             return Math.roundWithPrecision(num / Math.pow(10, abbreviationIndex * 3), len) + abbreviations[abbreviationIndex];
         }
         return num.toString();
+    }
+    
+    //% blockId=num_to_roman
+    //% block="turn $num into roman numerals"
+    //% block.loc.fr="convertir $num en chiffres romains"
+    //% subcategory="String"
+    //% color="#F5D547"
+    //% weight=10
+    //% num.delf=75
+    //% group="numbers"
+    export function toRoman(num: number): string {
+        if (num <= 0) return "N"; // 'N' for zero (nulla)
+        let roman = "";
+
+        let keys = Object.keys(romanSymbols).map(k => parseInt(k)).sort((a, b) => b - a);
+        for (let key of keys) {
+            while (num >= key) {
+                roman += romanSymbols[key];
+                num -= key;
+            }
+        }
+        return roman;
     }
     /**
      * Converts a string to uppercase
