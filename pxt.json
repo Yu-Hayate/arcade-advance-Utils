@@ -9,9 +9,7 @@
         "main.ts",
         "README.md",
         "Advance.ts",
-        "debuging_tools.ts",
-        "images.g.jres",
-        "images.g.ts"
+        "debuging_tools.ts"
     ],
     "testFiles": [
         "test.ts"
